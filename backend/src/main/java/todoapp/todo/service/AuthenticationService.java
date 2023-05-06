@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import todoapp.todo.dto.AuthenticationRequestDTO;
 import todoapp.todo.dto.AuthenticationResponseDTO;
 import todoapp.todo.dto.RegisterRequestDTO;
+import todoapp.todo.dto.UserDTO;
 import todoapp.todo.entity.Users;
 import todoapp.todo.exeptions.EmailNotPresentedException;
 import todoapp.todo.exeptions.PasswordIsNotPresentedException;
@@ -87,6 +89,21 @@ public class AuthenticationService {
 
         return AuthenticationResponseDTO.builder()
                 .token(jwt)
+                .build();
+    }
+
+    public UserDTO getUserInfo() {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return UserDTO.builder().userName("").id("").error("Not authenticated").build();
+        }
+
+        Users ctx = (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+        return UserDTO.builder()
+                .userName(ctx.getUsername())
+                .id(String.valueOf(ctx.getId()))
+                .error("")
                 .build();
     }
 }

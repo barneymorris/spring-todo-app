@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Posts {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -23,4 +23,7 @@ public class Posts {
 
     @Column(name = "post_text")
     private String postText;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    public Users user;
 }
